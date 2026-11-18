@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>PocketFlow — Finanzen & Abos</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <meta name="theme-color" content="#06b6d4" />
+</head>
+<body>
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+  </div>
+
+  <div class="app-container">
+    <!-- Top Header -->
+    <header class="top-bar glass-card">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <h1>PocketFlow</h1>
+      </div>
+
+      <div class="top-actions">
+        <button id="privacyToggleBtn" class="icon-btn" title="Beträge verbergen/anzeigen" aria-label="Diskret-Modus">
+          <svg id="eyeOpenIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <svg id="eyeClosedIcon" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+            <line x1="1" y1="1" x2="23" y2="23"></line>
+          </svg>
+        </button>
+
+        <button id="themeToggleBtn" class="icon-btn" title="Design wechseln" aria-label="Theme wechseln">
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <button id="backupModalBtn" class="icon-btn" title="Backup & Export" aria-label="Backup">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Haupt-Navigation -->
+    <nav class="tab-nav glass-card" role="tablist">
+      <button class="nav-pill active" data-tab="dashboard">Übersicht</button>
+      <button class="nav-pill" data-tab="transactions">Buchungen</button>
+      <button class="nav-pill" data-tab="subscriptions">Abos</button>
+      <button class="nav-pill" data-tab="goals">Ziele</button>
+    </nav>
+
+    <!-- TAB 1: DASHBOARD -->
+    <main id="tab-dashboard" class="tab-view active">
+      <section class="balance-card glass-card">
+        <div class="balance-header">
+          <span class="muted-label">Verfügbares Guthaben</span>
+          <span id="currentMonthLabel" class="badge-pill">Nov 2026</span>
+        </div>
+        <div id="totalBalance" class="balance-amount money-val">0,00 €</div>
+
+        <div class="stats-row">
+          <div class="stat-box income">
+            <span class="stat-label">↓ Einnahmen</span>
+            <span id="monthIncome" class="stat-val money-val">0,00 €</span>
+          </div>
+          <div class="stat-box expense">
+            <span class="stat-label">↑ Ausgaben</span>
+            <span id="monthExpense" class="stat-val money-val">0,00 €</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Monatsbudget-Ampel -->
+      <section class="budget-card glass-card">
+        <div class="section-head">
+          <h2>Monatsbudget-Limit</h2>
+          <button id="editBudgetBtn" class="link-btn">Limit ändern</button>
+        </div>
+        <div class="budget-numbers">
+          <span id="budgetUsedText" class="money-val">0,00 € ausgegeben</span>
+          <span id="budgetLimitText" class="money-val">von 1.500,00 €</span>
+        </div>
+        <div class="progress-track">
+          <div id="budgetProgressBar" class="progress-fill" style="width: 0%;"></div>
+        </div>
+        <div id="budgetEditRow" class="inline-edit hidden">
+          <input type="number" id="budgetLimitInput" class="glass-input" min="1" step="10" placeholder="Neues Limit in €" />
+          <button id="saveBudgetBtn" class="primary-btn small">Speichern</button>
+        </div>
+      </section>
+
+      <!-- Ausgaben-Donut-Chart -->
+      <section class="chart-card glass-card">
+        <div class="section-head">
+          <h2>Ausgaben nach Kategorie</h2>
+          <span id="subFixCostBadge" class="muted-label money-val">Fixkosten: 0,00 €/Mon.</span>
+        </div>
+        <div class="chart-layout">
+          <div class="canvas-box">
+            <canvas id="expenseChart" width="180" height="180"></canvas>
+            <div class="donut-center">
+              <span class="donut-sub">Gesamt</span>
+              <strong id="donutTotalText" class="money-val">0 €</strong>
+            </div>
+          </div>
+          <ul id="chartLegend" class="chart-legend"></ul>
+        </div>
+      </section>
+
+      <!-- Letzte 3 Buchungen -->
+      <section class="recent-card glass-card">
+        <div class="section-head">
+          <h2>Letzte Aktivitäten</h2>
+          <button class="link-btn" data-jump-tab="transactions">Alle ansehen →</button>
+        </div>
+        <div id="recentTxList" class="tx-list"></div>
+      </section>
+    </main>
+    <!-- TAB 2: ALLE BUCHUNGEN -->
+    <section id="tab-transactions" class="tab-view">
+      <div class="filter-bar glass-card">
+        <input type="search" id="txSearchInput" class="glass-input" placeholder="Nach Notiz oder Kategorie suchen..." />
+        <div class="filter-chips">
+          <button class="chip-btn active" data-filter="all">Alle</button>
+          <button class="chip-btn" data-filter="expense">Ausgaben</button>
+          <button class="chip-btn" data-filter="income">Einnahmen</button>
+        </div>
+      </div>
+      <div id="fullTxList" class="tx-list glass-card"></div>
+    </section>
+
+    <!-- TAB 3: ABO-MANAGER -->
+    <section id="tab-subscriptions" class="tab-view">
+      <div class="sub-summary glass-card">
+        <div>
+          <span class="muted-label">Monatliche Fixkosten</span>
+          <div id="monthlySubTotal" class="sub-total-val money-val">0,00 €</div>
+        </div>
+        <button id="openSubModalBtn" class="primary-btn">+ Neues Abo</button>
+      </div>
+      <div id="subList" class="sub-list"></div>
+    </section>
+
+    <!-- TAB 4: SPARZIELE -->
+    <section id="tab-goals" class="tab-view">
+      <div class="sub-summary glass-card">
+        <div>
+          <span class="muted-label">Gespartes Vermögen</span>
+          <div id="totalSavedGoals" class="sub-total-val money-val">0,00 €</div>
+        </div>
+        <button id="openGoalModalBtn" class="primary-btn">+ Neues Ziel</button>
+      </div>
+      <div id="goalsList" class="goals-list"></div>
+    </section>
+
+    <!-- Floating Action Button (Blitz-Buchung) -->
+    <button id="fabAddTxBtn" class="fab-btn" title="Neue Buchung erfassen" aria-label="Neue Buchung">+</button>
+  </div>
+
+  <!-- MODAL 1: BLITZ-BUCHUNG -->
+  <div id="txModal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-box glass-card">
+      <div class="modal-head">
+        <h2>Neue Buchung</h2>
+        <button class="icon-btn close-modal" data-close="txModal">✕</button>
+      </div>
+
+      <form id="txForm" class="stack-form">
+        <div class="type-switch">
+          <button type="button" class="type-btn active expense" data-tx-type="expense">Ausgabe</button>
+          <button type="button" class="type-btn income" data-tx-type="income">Einnahme</button>
+        </div>
+
+        <div class="amount-wrapper">
+          <input type="number" id="txAmount" class="amount-input" placeholder="0.00" step="0.01" min="0.01" required />
+          <span class="currency-suffix">€</span>
+        </div>
+
+        <label class="field-label">Kategorie</label>
+        <div id="categoryGrid" class="category-grid"></div>
+
+        <div class="two-cols">
+          <div>
+            <label for="txNote" class="field-label">Notiz</label>
+            <input type="text" id="txNote" class="glass-input" placeholder="z.B. Supermarkt" maxlength="40" />
+          </div>
+          <div>
+            <label for="txDate" class="field-label">Datum</label>
+            <input type="date" id="txDate" class="glass-input" required />
+          </div>
+        </div>
+
+        <button type="submit" class="primary-btn full-width">Buchung speichern</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: NEUES ABO -->
+  <div id="subModal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-box glass-card">
+      <div class="modal-head">
+        <h2>Abo / Fixkosten hinzufügen</h2>
+        <button class="icon-btn close-modal" data-close="subModal">✕</button>
+      </div>
+      <form id="subForm" class="stack-form">
+        <input type="text" id="subName" class="glass-input" placeholder="Name (z.B. Spotify, Fitnessstudio)" required />
+        <div class="two-cols">
+          <input type="number" id="subAmount" class="glass-input" placeholder="Betrag (€)" step="0.01" min="0.01" required />
+          <select id="subCycle" class="glass-input">
+            <option value="monthly">Monatlich</option>
+            <option value="yearly">Jährlich</option>
+          </select>
+        </div>
+        <label for="subNextDate" class="field-label">Nächste Abbuchung</label>
+        <input type="date" id="subNextDate" class="glass-input" required />
+        <button type="submit" class="primary-btn full-width">Abo speichern</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 3: NEUES SPARZIEL -->
+  <div id="goalModal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-box glass-card">
+      <div class="modal-head">
+        <h2>Neues Sparziel</h2>
+        <button class="icon-btn close-modal" data-close="goalModal">✕</button>
+      </div>
+      <form id="goalForm" class="stack-form">
+        <input type="text" id="goalTitle" class="glass-input" placeholder="Ziel (z.B. Urlaub, Neuer Laptop)" required />
+        <div class="two-cols">
+          <input type="number" id="goalTarget" class="glass-input" placeholder="Zielbetrag (€)" step="1" min="1" required />
+          <input type="number" id="goalCurrent" class="glass-input" placeholder="Startguthaben (€)" step="1" min="0" value="0" />
+        </div>
+        <button type="submit" class="primary-btn full-width">Sparziel anlegen</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 4: BACKUP & EXPORT -->
+  <div id="backupModal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-box glass-card">
+      <div class="modal-head">
+        <h2>Daten sichern & exportieren</h2>
+        <button class="icon-btn close-modal" data-close="backupModal">✕</button>
+      </div>
+      <div class="stack-form">
+        <button id="exportJsonBtn" class="primary-btn full-width">JSON-Backup herunterladen</button>
+        <button id="exportCsvBtn" class="secondary-btn full-width">Als Excel-CSV exportieren</button>
+        <label class="secondary-btn full-width file-upload-label">
+          JSON-Backup wiederherstellen
+          <input type="file" id="importJsonInput" accept=".json" hidden />
+        </label>
+        <button id="resetDemoBtn" class="danger-btn full-width">Alle Daten zurücksetzen</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
